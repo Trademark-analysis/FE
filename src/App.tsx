@@ -1,122 +1,135 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import "./App.css";
+
+type Candidate = {
+  name: string;
+  score: number;
+  priority: "높음" | "중간";
+  reason: string;
+};
+
+const candidates: Candidate[] = [
+  {
+    name: "STARBUCKS",
+    score: 81,
+    priority: "높음",
+    reason: "문자 및 도형 유사도 높음",
+  },
+  {
+    name: "STARBOX",
+    score: 77,
+    priority: "높음",
+    reason: "문자 유사",
+  },
+  {
+    name: "STAR CAFE",
+    score: 62,
+    priority: "중간",
+    reason: "일부 문자 유사",
+  },
+];
+
+const summaryItems = [
+  "최종 결론 유사성이 높음",
+  "주요 위험 요소",
+  "문자 유사도 높음",
+  "동일 니스분류 존재",
+  "유사한 도형 구도 발견",
+];
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <main className="report-page">
+      <header className="report-header">
+        <div className="header-left">
+          <button className="back-button" type="button" aria-label="뒤로가기">
+            ←
+          </button>
+          <span>AI 분석 리포트</span>
         </div>
-        <div>
-          <h1>Get started</h1>
+
+        <button className="download-button" type="button">
+          <span>⇩</span>
+          Download
+        </button>
+      </header>
+
+      <section className="hero-section">
+        <div className="hero-text">
+          <span className="status-badge">분석 완료</span>
+
+          <h1>
+            입력 상표명: <strong>STARBOX COFFEE</strong>
+          </h1>
+
+          <ul className="summary-list">
+            {summaryItems.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="logo-preview">
+          <div className="logo-inner" />
+        </div>
+      </section>
+
+      <section className="candidate-section">
+        <h2>
+          <span>↗</span>
+          유사 후보 Top 3 요약
+        </h2>
+
+        <div className="candidate-list">
+          {candidates.map((candidate) => (
+            <article className="candidate-card" key={candidate.name}>
+              <div className="candidate-left">
+                <div className="candidate-thumb">
+                  <div />
+                </div>
+
+                <div className="candidate-info">
+                  <h3>{candidate.name}</h3>
+                  <p>
+                    종합유사도:{" "}
+                    <strong className="score">{candidate.score}%</strong>
+                    <span>
+                      우선순위: <b>{candidate.priority}</b>
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="candidate-right">
+                <p>
+                  주요 근거:
+                  <br />
+                  {candidate.reason}
+                </p>
+                <button type="button" aria-label="상세보기">
+                  →
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="summary-report">
+        <h2>분석 요약 리포트</h2>
+
+        <div className="summary-box">
           <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+            &gt;&gt; 본 분석 결과, 입력 상표는 일부 기존 상표와 문자 및 도형
+            요소에서 유사성이 확인되었다.
+          </p>
+          <p>
+            특히 동일하거나 유사한 니스류에 속한 등록 상표가 존재하므로
+            변리사의 추가 검토가 필요하다.
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
       </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    </main>
+  );
 }
 
-export default App
+export default App;
