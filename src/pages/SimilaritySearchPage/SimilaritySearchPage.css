@@ -1,0 +1,237 @@
+.similarity-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+  color: #000000;
+}
+
+.similarity-content {
+  width: 690px;
+  margin: 0 auto;
+  padding-top: 72px;
+  display: grid;
+  grid-template-columns: 370px 1fr;
+  column-gap: 52px;
+}
+
+/* 왼쪽 영역 */
+.similarity-left-area {
+  width: 370px;
+}
+
+.similarity-title-block {
+  margin-bottom: 37px;
+}
+
+.title-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sparkle-icon {
+  display: inline-block;
+  font-size: 28px;
+  line-height: 1;
+  color: #111111;
+  transform: translateY(-1px);
+}
+
+.title-line h1 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.similarity-title-block p {
+  margin: 8px 0 0 33px;
+  color: #9a9a9a;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.my-trademark-section {
+  width: 100%;
+  text-align: center;
+}
+
+.my-trademark-section h2 {
+  margin: 0 0 20px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.my-trademark-card {
+  width: 188px;
+  height: 237px;
+  margin: 0 auto;
+  border: 1px solid #e8e8e8;
+  background: #ffffff;
+}
+
+.my-image-box {
+  width: 100%;
+  height: 187px;
+  background: #dfe2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-placeholder {
+  position: relative;
+  width: 94px;
+  height: 94px;
+  border: 7px solid rgba(255, 255, 255, 0.65);
+}
+
+.diagonal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 124px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.65);
+  transform-origin: center;
+}
+
+.diagonal-one {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.diagonal-two {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.my-card-label {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 11px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #202020;
+  letter-spacing: -0.02em;
+  text-align: left;
+}
+
+.detail-button {
+  margin-top: 29px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #000000;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  cursor: pointer;
+}
+
+.detail-button span {
+  font-size: 18px;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+/* 오른쪽 유사 후보 영역 */
+.similar-candidate-section {
+  width: 248px;
+  padding-top: 25px;
+}
+
+.similar-candidate-section h2 {
+  margin: 0 0 17px;
+  color: #222222;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.similar-candidate-list {
+  width: 248px;
+}
+
+.similar-candidate-row {
+  width: 100%;
+  min-height: 107px;
+  padding: 0 0 12px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #bdbdbd;
+}
+
+.similar-candidate-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.similar-candidate-image {
+  width: 80px;
+  height: 83px;
+  flex-shrink: 0;
+  background: #c4c4c4;
+}
+
+.similar-candidate-text {
+  padding-top: 6px;
+  flex: 1;
+}
+
+.similar-candidate-text h3 {
+  margin: 0 0 20px;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.similar-candidate-text p {
+  margin: 0 0 3px;
+  color: #9a9a9a;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.similar-candidate-text strong {
+  display: block;
+  color: #2457ff;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+@media (max-width: 760px) {
+  .similarity-content {
+    width: 100%;
+    padding: 48px 28px;
+    grid-template-columns: 1fr;
+    row-gap: 56px;
+  }
+
+  .similarity-left-area {
+    width: 100%;
+  }
+
+  .similar-candidate-section {
+    width: 100%;
+    padding-top: 0;
+  }
+
+  .similar-candidate-list {
+    width: 100%;
+  }
+
+  .similar-candidate-row {
+    width: 100%;
+  }
+}

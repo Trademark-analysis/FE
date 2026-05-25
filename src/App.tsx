@@ -1,6 +1,6 @@
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import AnalysisReportPage from "./pages/AnalysisReportPage/AnalysisReportPage";
-//import SimilaritySearchPage from "./pages/SimilaritySearchPage/SimilaritySearchPage";
+import SimilaritySearchPage from "./pages/SimilaritySearchPage/SimilaritySearchPage";
 
 function App() {
   return (
@@ -45,6 +45,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/report" replace />} />
         <Route path="/report" element={<AnalysisReportPage />} />
+        <Route path="/similarity" element={<SimilaritySearchPage />} />
       </Routes>
     </BrowserRouter>
   );
