@@ -41,14 +41,14 @@ function SimilaritySearchPage() {
             <h2>내 상표</h2>
 
             <article className="my-trademark-card">
-              <div className="my-image-box">
-                <div className="image-placeholder">
-                  <span className="diagonal diagonal-one" />
-                  <span className="diagonal diagonal-two" />
+                <div className="floating-title">STARBOX COFFEE</div>
+                
+                <div className="my-image-box">
+                  <div className="image-placeholder">
+                    <span className="diagonal diagonal-one" />
+                    <span className="diagonal diagonal-two" />
+                  </div>
                 </div>
-              </div>
-
-              <div className="my-card-label">STARBOX COFFEE</div>
             </article>
 
             <button className="detail-button" type="button">
