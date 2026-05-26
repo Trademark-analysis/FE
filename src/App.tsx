@@ -1,11 +1,16 @@
-import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Link, Route, Routes, useLocation } from "react-router-dom";
+import LogoInputPage from "./pages/LogoInputPage/LogoInputPage";
 import AnalysisReportPage from "./pages/AnalysisReportPage/AnalysisReportPage";
 import SimilaritySearchPage from "./pages/SimilaritySearchPage/SimilaritySearchPage";
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const showNav = location.pathname !== "/";
+
   return (
-    <BrowserRouter>
-      <nav
+    <>
+      {showNav && (
+        <nav
         style={{
           position: "fixed",
           top: 16,
@@ -40,13 +45,22 @@ function App() {
         >
           유사 후보
         </Link>
-      </nav>
+        </nav>
+      )}
 
       <Routes>
-        <Route path="/" element={<Navigate to="/report" replace />} />
+        <Route path="/" element={<LogoInputPage />} />
         <Route path="/report" element={<AnalysisReportPage />} />
         <Route path="/similarity" element={<SimilaritySearchPage />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
