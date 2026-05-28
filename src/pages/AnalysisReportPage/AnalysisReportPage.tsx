@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import "./AnalysisReportPage.css";
 
 type Candidate = {
@@ -37,11 +38,17 @@ const summaryItems = [
 ];
 
 function AnalysisReportPage() {
+  const navigate = useNavigate();
   return (
     <main className="report-page">
       <header className="report-header">
         <div className="header-left">
-          <button className="back-button" type="button" aria-label="뒤로가기">
+          <button
+            className="back-button"
+            type="button"
+            aria-label="비교 화면으로 이동"
+            onClick={() => navigate("/similarity")}
+          >
             ←
           </button>
           <span>AI 분석 리포트</span>
@@ -105,7 +112,13 @@ function AnalysisReportPage() {
                   <br />
                   {candidate.reason}
                 </p>
-                <button type="button" aria-label="상세보기">
+                <button
+                  type="button"
+                  aria-label={`${candidate.name} 상세 비교 화면으로 이동`}
+                  onClick={() =>
+                    navigate(`/similarity/${encodeURIComponent(candidate.name)}`)
+                  }
+                >
                   →
                 </button>
               </div>
