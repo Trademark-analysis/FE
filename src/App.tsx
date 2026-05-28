@@ -2,6 +2,7 @@ import { BrowserRouter, Link, Route, Routes, useLocation } from "react-router-do
 import LogoInputPage from "./pages/LogoInputPage/LogoInputPage";
 import AnalysisReportPage from "./pages/AnalysisReportPage/AnalysisReportPage";
 import SimilaritySearchPage from "./pages/SimilaritySearchPage/SimilaritySearchPage";
+import DetailedComparisonPage from "./pages/DetailedComparisonPage/DetailedComparisonPage";
 
 function AppContent() {
   const location = useLocation();
@@ -45,6 +46,17 @@ function AppContent() {
         >
           유사 후보
         </Link>
+
+        <Link
+            to="/detail"
+            style={{
+              color: "#7c2cf4",
+              textDecoration: "none",
+            }}
+          >
+            상세 비교
+          </Link>
+
         </nav>
       )}
 
@@ -52,6 +64,7 @@ function AppContent() {
         <Route path="/" element={<LogoInputPage />} />
         <Route path="/report" element={<AnalysisReportPage />} />
         <Route path="/similarity" element={<SimilaritySearchPage />} />
+        <Route path="/detail" element={<DetailedComparisonPage />} />
       </Routes>
     </>
   );
