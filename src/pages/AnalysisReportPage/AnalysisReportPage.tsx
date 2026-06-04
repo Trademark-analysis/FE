@@ -30,8 +30,7 @@ const candidates: Candidate[] = [
 ];
 
 const summaryItems = [
-  "최종 결론 유사성이 높음",
-  "주요 위험 요소",
+  "최종 결론: 유사성이 높음",
   "문자 유사도 높음",
   "동일 니스분류 존재",
   "유사한 도형 구도 발견",
@@ -39,57 +38,77 @@ const summaryItems = [
 
 function AnalysisReportPage() {
   const navigate = useNavigate();
+
   return (
     <main className="report-page">
-      <header className="report-header">
-        <div className="header-left">
-          <button
-            className="back-button"
-            type="button"
-            aria-label="비교 화면으로 이동"
-            onClick={() => navigate("/similarity")}
-          >
-            ←
-          </button>
-          <span>AI 분석 리포트</span>
-        </div>
+      <nav className="report-nav">
+        <div className="nav-dot" />
+        <span className="nav-brand">TrademarkAI</span>
+        <div className="nav-divider" />
+        <span className="nav-page">AI 분석 리포트</span>
+      </nav>
 
-        <button className="download-button" type="button">
-          <span>⇩</span>
-          Download
-        </button>
-      </header>
+      <section className="report-content">
+        <header className="report-header">
+          <div className="header-left">
+            <button
+              className="back-button"
+              type="button"
+              aria-label="비교 화면으로 이동"
+              onClick={() => navigate("/similarity")}
+            >
+              ←
+            </button>
 
-      <section className="hero-section">
-        <div className="hero-text">
-          <span className="status-badge">분석 완료</span>
+            <div className="header-title">
+              <p>Analysis Report</p>
+              <h1>상표 유사도 분석 결과</h1>
+            </div>
+          </div>
 
-          <h1>
-            입력 상표명: <strong>STARBOX COFFEE</strong>
-          </h1>
+        </header>
 
-          <ul className="summary-list">
-            {summaryItems.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
+        <section className="report-overview">
+          <article className="overview-card">
+            <span className="status-badge">분석 완료</span>
+            <h2>
+              입력 상표명: <strong>STARBOX COFFEE</strong>
+            </h2>
+            <p className="overview-desc">
+              입력 상표와 기존 상표의 문자, 도형, 상품류 정보를 기준으로
+              유사 가능성이 높은 후보를 정리했습니다.
+            </p>
 
-        <div className="logo-preview">
-          <div className="logo-inner" />
-        </div>
-      </section>
+            <ul className="summary-list">
+              {summaryItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
 
-      <section className="candidate-section">
-        <h2>
-          <span>↗</span>
-          유사 후보 Top 3 요약
-        </h2>
+          <aside className="logo-card" aria-label="분석 대상 상표 이미지">
+            <p className="logo-card-label">분석 대상 상표</p>
+            <div className="logo-preview">
+              <div className="logo-inner" />
+            </div>
+            <p className="logo-name">STARBOX COFFEE</p>
+          </aside>
+        </section>
 
-        <div className="candidate-list">
-          {candidates.map((candidate) => (
-            <article className="candidate-card" key={candidate.name}>
-              <div className="candidate-left">
+        <section className="candidate-section">
+          <div className="section-heading">
+            <div>
+              
+              <h2>유사 후보 Top 3 요약</h2>
+            </div>
+            <span className="candidate-count">총 {candidates.length}건</span>
+          </div>
+
+          <div className="candidate-list">
+            {candidates.map((candidate, index) => (
+              <article className="candidate-card" key={candidate.name}>
+                <div className="candidate-rank">{index + 1}</div>
+
                 <div className="candidate-thumb">
                   <div />
                 </div>
@@ -97,22 +116,25 @@ function AnalysisReportPage() {
                 <div className="candidate-info">
                   <h3>{candidate.name}</h3>
                   <p>
-                    종합유사도:{" "}
-                    <strong className="score">{candidate.score}%</strong>
-                    <span>
-                      우선순위: <b>{candidate.priority}</b>
+                    우선순위
+                    <span className={`priority-chip priority-${candidate.priority}`}>
+                      {candidate.priority}
                     </span>
                   </p>
                 </div>
-              </div>
 
-              <div className="candidate-right">
-                <p>
-                  주요 근거:
-                  <br />
-                  {candidate.reason}
-                </p>
+                <div className="candidate-score">
+                  <span>종합 유사도</span>
+                  <strong>{candidate.score}%</strong>
+                </div>
+
+                <div className="candidate-reason">
+                  <span>주요 근거</span>
+                  <p>{candidate.reason}</p>
+                </div>
+
                 <button
+                  className="candidate-more-button"
                   type="button"
                   aria-label={`${candidate.name} 상세 비교 화면으로 이동`}
                   onClick={() =>
@@ -121,25 +143,25 @@ function AnalysisReportPage() {
                 >
                   →
                 </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+              </article>
+            ))}
+          </div>
+        </section>
 
-      <section className="summary-report">
-        <h2>분석 요약 리포트</h2>
+        <section className="summary-report">
+          <h2>분석 요약</h2>
 
-        <div className="summary-box">
-          <p>
-            &gt;&gt; 본 분석 결과, 입력 상표는 일부 기존 상표와 문자 및 도형
-            요소에서 유사성이 확인되었다.
-          </p>
-          <p>
-            특히 동일하거나 유사한 니스류에 속한 등록 상표가 존재하므로
-            변리사의 추가 검토가 필요하다.
-          </p>
-        </div>
+          <div className="summary-box">
+            <p>
+              본 분석 결과, 입력 상표는 일부 기존 상표와 문자 및 도형 요소에서
+              유사성이 확인되었습니다.
+            </p>
+            <p>
+              특히 동일하거나 유사한 니스류에 속한 등록 상표가 존재하므로
+              변리사의 추가 검토가 필요합니다.
+            </p>
+          </div>
+        </section>
       </section>
     </main>
   );
