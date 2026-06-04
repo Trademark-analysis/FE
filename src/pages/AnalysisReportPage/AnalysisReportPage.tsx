@@ -133,12 +133,13 @@ function AnalysisReportPage() {
                   <p>{candidate.reason}</p>
                 </div>
 
+                {/* 이 버튼을 클릭하면 /detail 페이지로 이동하며 선택한 상표 데이터를 보냅니다 */}
                 <button
                   className="candidate-more-button"
                   type="button"
                   aria-label={`${candidate.name} 상세 비교 화면으로 이동`}
                   onClick={() =>
-                    navigate(`/similarity/${encodeURIComponent(candidate.name)}`)
+                    navigate("/detail", { state: { candidate } })
                   }
                 >
                   →
