@@ -3,78 +3,133 @@ import "./SimilaritySearchPage.css";
 type SimilarCandidate = {
   name: string;
   probability: number;
+  niceClass: string;
+  reason: string;
 };
 
 const similarCandidates: SimilarCandidate[] = [
   {
     name: "STARBUKS COFFEE",
     probability: 99,
+    niceClass: "제30류 · 커피/음료",
+    reason: "",
   },
   {
     name: "STARBOOKS",
     probability: 90,
+    niceClass: "제35류 · 온라인 판매",
+    reason: "",
   },
   {
     name: "STAR",
     probability: 81,
+    niceClass: "제42류 · IT 서비스",
+    reason: "",
   },
   {
     name: "BOOKS COFFEE",
     probability: 72,
+    niceClass: "제30류 · 식음료",
+    reason: "",
   },
 ];
 
+function getRiskLabel(probability: number) {
+  if (probability >= 90) return "높음";
+  if (probability >= 80) return "주의";
+  return "보통";
+}
+
 function SimilaritySearchPage() {
+  const topCandidate = similarCandidates[0];
+
   return (
     <main className="similarity-page">
+      <nav className="similarity-nav">
+        <div className="nav-dot" />
+        <span className="nav-brand">TrademarkAI</span>
+        <div className="nav-divider" />
+        <span className="nav-page">유사 상표 검색 결과</span>
+      </nav>
+
       <section className="similarity-content">
-        <div className="similarity-left-area">
-          <header className="similarity-title-block">
-            <div className="title-line">
-              <span className="sparkle-icon">✧</span>
-              <h1>Similarity Search</h1>
+        <header className="similarity-hero">
+          <div>
+            <p className="hero-eyebrow">AI Similarity Search</p>
+            <h1>유사 상표 후보를 찾았습니다</h1>
+            <p className="hero-desc">
+              입력한 상표와 기존 상표의 문자, 이미지, 상품류 정보를 비교해
+              유사 가능성이 높은 후보를 정리했습니다.
+            </p>
+          </div>
+
+         
+        </header>
+
+        <div className="similarity-layout">
+          <section className="my-trademark-card" aria-label="내 상표 정보">
+            <div className="section-heading">
+              <p>My Trademark</p>
+              <h2>내 상표</h2>
             </div>
-            <p>문자 및 이미지 유사도를 분석합니다</p>
-          </header>
 
-          <section className="my-trademark-section">
-            <h2>내 상표</h2>
+            <div className="my-image-box">
+              <div className="image-placeholder" aria-hidden="true">
+                <span className="diagonal diagonal-one" />
+                <span className="diagonal diagonal-two" />
+              </div>
+            </div>
 
-            <article className="my-trademark-card">
-                <div className="floating-title">STARBOX COFFEE</div>
-                
-                <div className="my-image-box">
-                  <div className="image-placeholder">
-                    <span className="diagonal diagonal-one" />
-                    <span className="diagonal diagonal-two" />
-                  </div>
-                </div>
-            </article>
+            <div className="trademark-info">
+              <h3>STARBOX COFFEE</h3>
+              <p>분석 대상 상표명</p>
+            </div>
+
 
             <button className="detail-button" type="button">
-              상세 비교화면
+              상세 비교화면 보기
               <span>→</span>
             </button>
           </section>
+
+          <section className="similar-candidate-section" aria-label="유사 후보 목록">
+            <div className="section-heading candidate-heading">
+              <div>
+                <p>Similar Candidates</p>
+                <h2>유사 후보</h2>
+              </div>
+              <span className="candidate-count">{similarCandidates.length}건</span>
+            </div>
+
+            <div className="similar-candidate-list">
+              {similarCandidates.map((candidate, index) => (
+                <article className="similar-candidate-row" key={candidate.name}>
+                  <div className="rank-badge">{index + 1}</div>
+
+                  <div className="similar-candidate-image">
+                    <div className="mini-placeholder" aria-hidden="true" />
+                  </div>
+
+                  <div className="similar-candidate-text">
+                    <div className="candidate-title-row">
+                      <h3>{candidate.name}</h3>
+                      <span className={`risk-chip risk-${getRiskLabel(candidate.probability)}`}>
+                        {getRiskLabel(candidate.probability)}
+                      </span>
+                    </div>
+                    <p className="candidate-meta">{candidate.niceClass}</p>
+                    <p className="candidate-reason">{candidate.reason}</p>
+                  </div>
+
+                  <div className="candidate-score">
+                    <span>유사도</span>
+                    <strong>{candidate.probability}%</strong>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
         </div>
-
-        <section className="similar-candidate-section">
-          <h2>유사 후보</h2>
-
-          <div className="similar-candidate-list">
-            {similarCandidates.map((candidate) => (
-              <article className="similar-candidate-row" key={candidate.name}>
-                <div className="similar-candidate-image" />
-
-                <div className="similar-candidate-text">
-                  <h3>{candidate.name}</h3>
-                  <p>유사 확률:</p>
-                  <strong>{candidate.probability}%</strong>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
       </section>
     </main>
   );
