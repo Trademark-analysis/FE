@@ -104,7 +104,7 @@ export default function LogoInputPage() {
       setErrors((prev) => ({ ...prev, logoImage: "상표 이미지를 업로드해주세요." }));
       return;
     }
-    navigate("/report", { state: formData });
+    navigate("/process", { state: formData });
   };
 
   const getStepClass = (i: number) => {
