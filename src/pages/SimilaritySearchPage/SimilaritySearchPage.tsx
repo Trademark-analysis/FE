@@ -1,4 +1,5 @@
 import "./SimilaritySearchPage.css";
+import { useNavigate } from "react-router-dom"; 
 
 type SimilarCandidate = {
   name: string;
@@ -41,6 +42,8 @@ function getRiskLabel(probability: number) {
 }
 
 function SimilaritySearchPage() {
+  const navigate = useNavigate(); 
+
   return (
     <main className="similarity-page">
       <nav className="similarity-nav">
@@ -60,8 +63,6 @@ function SimilaritySearchPage() {
               유사 가능성이 높은 후보를 정리했습니다.
             </p>
           </div>
-
-         
         </header>
 
         <div className="similarity-layout">
@@ -83,9 +84,13 @@ function SimilaritySearchPage() {
               <p>분석 대상 상표명</p>
             </div>
 
-
-            <button className="detail-button" type="button" onClick={() => navigate("/detail")}>
-              상세 비교화면 보기
+            {/* 3. 분석 리포트 보기 버튼의 경로를 /report 로 수정 */}
+            <button 
+              className="detail-button" 
+              type="button" 
+              onClick={() => navigate("/report")}
+            >
+              분석 리포트 보기
               <span>→</span>
             </button>
           </section>
@@ -101,7 +106,13 @@ function SimilaritySearchPage() {
 
             <div className="similar-candidate-list">
               {similarCandidates.map((candidate, index) => (
-                <article className="similar-candidate-row" key={candidate.name}>
+                /* 4. 유사 후보 행을 클릭하면 상세 페이지(/detail)로 이동하며 선택된 데이터를 넘겨줍니다. */
+                <article 
+                  className="similar-candidate-row" 
+                  key={candidate.name}
+                  onClick={() => navigate("/detail", { state: { candidate } })}
+                  style={{ cursor: "pointer" }} // 클릭 가능한 요소임을 보여주는 스타일 추가
+                >
                   <div className="rank-badge">{index + 1}</div>
 
                   <div className="similar-candidate-image">

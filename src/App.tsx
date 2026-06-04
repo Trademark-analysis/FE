@@ -29,13 +29,13 @@ function AppContent() {
         }}
       >
         <Link
-          to="/report"
+          to="/process"
           style={{
             color: "#7c2cf4",
             textDecoration: "none",
           }}
         >
-          AI 리포트
+          진행
         </Link>
 
         <Link
@@ -59,24 +59,25 @@ function AppContent() {
           </Link>
 
         <Link
-          to="/process"
+          to="/report"
           style={{
             color: "#7c2cf4",
             textDecoration: "none",
           }}
         >
-          진행
+          AI 리포트
         </Link>
-
         </nav>
       )}
 
       <Routes>
         <Route path="/" element={<LogoInputPage />} />
-        <Route path="/report" element={<AnalysisReportPage />} />
+        <Route path="/process" element={<ProcessPage />} />
         <Route path="/similarity" element={<SimilaritySearchPage />} />
         <Route path="/detail" element={<DetailedComparisonPage />} />
-        <Route path="/process" element={<ProcessPage />} />
+        <Route path="/report" element={<AnalysisReportPage />} />
+        {/* 2. 추가: /detail/상표명 형태로 들어와도 상세 페이지가 뜨도록 매핑 */}
+        <Route path="/detail/:candidateName" element={<DetailedComparisonPage />} />
       </Routes>
     </>
   );
