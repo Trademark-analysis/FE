@@ -47,8 +47,8 @@ export default function TrademarkAnalysis() {
   const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    DELAYS.forEach((delay, i) => {
-      setTimeout(() => {
+    const timers = DELAYS.map((delay, i) =>
+      window.setTimeout(() => {
         setStepStates((prev) => {
           const next = [...prev];
 
@@ -61,77 +61,82 @@ export default function TrademarkAnalysis() {
         setProgress(STEPS[i].prog);
         setProgressLabel(STEPS[i].progLabel);
         setHint(STEPS[i].hint);
-      }, delay);
-    });
+      }, delay),
+    );
 
-    setTimeout(() => {
+    const doneTimer = window.setTimeout(() => {
       setStepStates(["done", "done", "done", "done"]);
       setProgress(100);
       setProgressLabel("분석 완료");
       setCompleted(true);
     }, DONE_AT);
+
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+      window.clearTimeout(doneTimer);
+    };
   }, []);
 
   return (
-    <div className="container">
-      <main className="content">
-        {/* 이미지 박스 */}
-        <div className="imageBox">
-          <svg
-            width="36"
-            height="36"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="#B4B2A9"
-            strokeWidth="1.5"
-          >
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 15l-5-5L5 21"
-            />
-          </svg>
+    <main className="process-page">
+      <nav className="process-nav">
+        <div className="nav-dot" />
+        <span className="nav-brand">TrademarkAI</span>
+        <div className="nav-divider" />
+        <span className="nav-page">상표 유사도 분석</span>
+      </nav>
 
-          <span>업로드한 상표</span>
-        </div>
-
-        {/* 타이틀 */}
-        <div className="title">
-          <span>
-            {completed ? "분석이 완료되었습니다" : "상표 유사도 분석 중"}
-          </span>
-
-          {!completed && (
-            <span className="dotsAnim">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          )}
-        </div>
-
-        {/* 프로그레스 바 */}
-        <div className="progressWrap">
-          <div className="progressTrack">
-            <div
-              className="progressFill"
-              style={{ width: `${progress}%` }}
-            />
+      <section className="process-content">
+        <div className="process-card">
+          <div className="process-image-box">
+            <svg
+              width="38"
+              height="38"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 15l-5-5L5 21"
+              />
+            </svg>
+            <span>업로드한 상표</span>
           </div>
 
-          <div className="progressLabels">
-            <span>{progressLabel}</span>
-            <span>{progress}%</span>
+          <div className="process-title-area">
+            <p className="process-eyebrow">AI Analysis</p>
+            <h1>
+              {completed ? "분석이 완료되었습니다" : "상표 유사도 분석 중"}
+              {!completed && (
+                <span className="dotsAnim" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+              )}
+            </h1>
+            <p>{completed ? "유사 상표 3건이 발견되었습니다" : hint}</p>
           </div>
-        </div>
 
-        {/* 단계 */}
-        <div className="steps">
-          {STEPS.map((step, idx) => (
-            <div key={idx} className="stepWrapper">
-              <div className={`step ${stepStates[idx]}`}>
+          <div className="progressWrap">
+            <div className="progressTrack">
+              <div className="progressFill" style={{ width: `${progress}%` }} />
+            </div>
+
+            <div className="progressLabels">
+              <span>{progressLabel}</span>
+              <span>{progress}%</span>
+            </div>
+          </div>
+
+          <div className="process-steps">
+            {STEPS.map((step, idx) => (
+              <div key={step.label} className={`process-step ${stepStates[idx]}`}>
                 <div className="stepCircle">
                   {stepStates[idx] === "done" ? (
                     <svg
@@ -148,53 +153,25 @@ export default function TrademarkAnalysis() {
                       />
                     </svg>
                   ) : (
-                    <svg
-                      className="stepIcon"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <circle cx="12" cy="12" r="8" />
-                    </svg>
+                    <span>{idx + 1}</span>
                   )}
                 </div>
-
-                <span className="stepLabel">{step.label}</span>
+                <div>
+                  <strong>{step.label}</strong>
+                  <p>{step.progLabel}</p>
+                </div>
               </div>
-
-              {idx < STEPS.length - 1 && (
-                <div
-                  className={`stepLine ${
-                    stepStates[idx] === "done"
-                      ? "lineDone"
-                      : stepStates[idx] === "active"
-                      ? "lineActive"
-                      : "lineWaiting"
-                  }`}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* 결과 카드 */}
-        {completed && (
-          <div className="resultCard">
-            <div className="resultBadge">
-              ✓ 분석 완료
-            </div>
-
-            <div className="resultSub">
-              유사 상표 3건이 발견되었습니다
-            </div>
+            ))}
           </div>
-        )}
 
-        {!completed && (
-          <p className="hint">{hint}</p>
-        )}
-      </main>
-    </div>
+          {completed && (
+            <div className="resultCard">
+              <div className="resultBadge">✓ 분석 완료</div>
+              <div className="resultSub">곧 유사 후보 화면으로 이동할 수 있습니다</div>
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }

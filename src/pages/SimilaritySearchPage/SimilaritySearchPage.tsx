@@ -41,8 +41,6 @@ function getRiskLabel(probability: number) {
 }
 
 function SimilaritySearchPage() {
-  const topCandidate = similarCandidates[0];
-
   return (
     <main className="similarity-page">
       <nav className="similarity-nav">
@@ -86,7 +84,7 @@ function SimilaritySearchPage() {
             </div>
 
 
-            <button className="detail-button" type="button">
+            <button className="detail-button" type="button" onClick={() => navigate("/detail")}>
               상세 비교화면 보기
               <span>→</span>
             </button>
