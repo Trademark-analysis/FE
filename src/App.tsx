@@ -3,6 +3,7 @@ import LogoInputPage from "./pages/LogoInputPage/LogoInputPage";
 import AnalysisReportPage from "./pages/AnalysisReportPage/AnalysisReportPage";
 import SimilaritySearchPage from "./pages/SimilaritySearchPage/SimilaritySearchPage";
 import DetailedComparisonPage from "./pages/DetailedComparisonPage/DetailedComparisonPage";
+import ProcessPage from "./pages/ProcessPage/ProcessPage";
 
 function AppContent() {
   const location = useLocation();
@@ -57,6 +58,16 @@ function AppContent() {
             상세 비교
           </Link>
 
+        <Link
+          to="/process"
+          style={{
+            color: "#7c2cf4",
+            textDecoration: "none",
+          }}
+        >
+          진행
+        </Link>
+
         </nav>
       )}
 
@@ -65,6 +76,7 @@ function AppContent() {
         <Route path="/report" element={<AnalysisReportPage />} />
         <Route path="/similarity" element={<SimilaritySearchPage />} />
         <Route path="/detail" element={<DetailedComparisonPage />} />
+        <Route path="/process" element={<ProcessPage />} />
       </Routes>
     </>
   );
