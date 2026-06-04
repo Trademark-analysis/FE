@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "./ProcessPage.css";
 
 const STEPS = [
@@ -34,6 +35,7 @@ const DONE_AT = 6000;
 type StepState = "waiting" | "active" | "done";
 
 export default function TrademarkAnalysis() {
+  const navigate = useNavigate(); // 2. navigate 함수 선언
   const [stepStates, setStepStates] = useState<StepState[]>([
     "waiting",
     "waiting",
@@ -69,13 +71,20 @@ export default function TrademarkAnalysis() {
       setProgress(100);
       setProgressLabel("분석 완료");
       setCompleted(true);
+
+      // 3. 분석이 완료된 후 사용자가 완료 메시지를 잠깐 볼 수 있도록 
+      // 1초(1000ms) 정도 딜레이를 준 후 유사 후보 페이지로 이동
+      setTimeout(() => {
+        navigate("/similarity");
+      }, 1000);
+
     }, DONE_AT);
 
     return () => {
       timers.forEach((timer) => window.clearTimeout(timer));
       window.clearTimeout(doneTimer);
     };
-  }, []);
+  }, [navigate]); // 4. 의존성 배열에 navigate 추가
 
   return (
     <main className="process-page">
@@ -167,7 +176,7 @@ export default function TrademarkAnalysis() {
           {completed && (
             <div className="resultCard">
               <div className="resultBadge">✓ 분석 완료</div>
-              <div className="resultSub">곧 유사 후보 화면으로 이동할 수 있습니다</div>
+              <div className="resultSub">곧 유사 후보 화면으로 이동합니다...</div>
             </div>
           )}
         </div>
