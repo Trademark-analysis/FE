@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./LogoInputPage.css";
+import axios from "axios";
 
 interface FormData {
   serviceDescription: string;
   trademarkName: string;
   selectedCodes: string[];
   logoImage: File | null;
+}
+
+interface ClassificationCode {
+  code: string;
+  description: string;
 }
 
 const STEPS = [
@@ -45,6 +51,8 @@ export default function LogoInputPage() {
   });
   const [imagePreview, setImagePreview] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [recommendedCodes, setRecommendedCodes] = useState<ClassificationCode[]>([]);
+  const [isClassifying, setIsClassifying] = useState(false);
 
   const handleServiceChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -87,36 +95,72 @@ export default function LogoInputPage() {
     }
   };
 
-  const handleNext = () => {
-    if (step === 1) {
-      if (!formData.serviceDescription.trim()) {
-        setErrors((prev) => ({ ...prev, serviceDescription: "서비스 설명을 입력해주세요." }));
-        return;
-      }
-      if (!formData.trademarkName.trim()) {
-        setErrors((prev) => ({ ...prev, trademarkName: "상표명을 입력해주세요." }));
-        return;
-      }
-      setStep(2);
-    } else if (step === 2) {
-      if (formData.selectedCodes.length === 0) {
-        setErrors((prev) => ({ ...prev, selectedCodes: "최소 1개 이상의 유사군 코드를 선택해주세요." }));
-        return;
-      }
-      setStep(3);
+  const handleNext = async () => {
+  if (step === 1) {
+    if (!formData.serviceDescription.trim()) {
+      setErrors((prev) => ({ ...prev, serviceDescription: "서비스 설명을 입력해주세요." }));
+      return;
     }
-  };
+
+    if (!formData.trademarkName.trim()) {
+      setErrors((prev) => ({ ...prev, trademarkName: "상표명을 입력해주세요." }));
+      return;
+    }
+
+    try {
+      setIsClassifying(true);
+
+      const response = await axios.post(
+        "http://localhost:8080/api/trademark/classification",
+        {
+          description: formData.serviceDescription,
+        }
+      );
+
+      const codes = Array.isArray(response.data) ? response.data : [];
+
+      setRecommendedCodes(codes);
+      setFormData((prev) => ({
+        ...prev,
+        selectedCodes: [],
+      }));
+
+      setStep(2);
+    } catch (error) {
+      console.error("니스/유사군 코드 추천 실패:", error);
+      alert("코드 추천에 실패했습니다. 백엔드/ML 서버 상태를 확인해주세요.");
+    } finally {
+      setIsClassifying(false);
+    }
+
+    return;
+  }
+
+  if (step === 2) {
+    if (formData.selectedCodes.length === 0) {
+      setErrors((prev) => ({ ...prev, selectedCodes: "최소 1개 이상의 코드를 선택해주세요." }));
+      return;
+    }
+
+    setStep(3);
+  }
+};
 
   const handleBack = () => {
     if (step > 1) setStep(step - 1);
   };
 
+  //  즉시 로딩 화면으로 진입하도록 수정한 비동기 제어 영역
   const handleSubmit = () => {
     if (!formData.logoImage) {
       setErrors((prev) => ({ ...prev, logoImage: "상표 이미지를 업로드해주세요." }));
       return;
     }
-    navigate("/process", { state: formData });
+
+    console.log("=== ⏳ [1단계 입력창] 분석 시작 -> 로딩 화면(/process)으로 즉시 이동 ===");
+
+    //  원재료 formData를 rawFormData 주머니에 담아 로딩 페이지로 지연 없이 토스
+    navigate("/process", { state: { rawFormData: formData } });
   };
 
   const getStepClass = (i: number) => {
@@ -127,7 +171,6 @@ export default function LogoInputPage() {
 
   return (
     <div className="logo-input-root">
-      {/* Nav */}
       <nav className="logo-input-nav">
         <div className="nav-dot" />
         <Link to="/" className="nav-brand" style={{ textDecoration: "none" }}>TrademarkAI</Link>
@@ -136,7 +179,6 @@ export default function LogoInputPage() {
       </nav>
 
       <div className="logo-input-body">
-        {/* ── Left panel ── */}
         <aside className="left-panel">
           <div className="left-tag">
             <div className="left-tag-dot" />
@@ -190,9 +232,7 @@ export default function LogoInputPage() {
           </div>
         </aside>
 
-        {/* ── Right card ── */}
         <div className="right-card">
-          {/* Step 1: Service Description */}
           <div className={`form-panel ${step === 1 ? "visible" : ""}`}>
             <p className="panel-eyebrow">Step 01 / 03</p>
             <h2 className="panel-title">서비스/회사를 설명해주세요</h2>
@@ -215,7 +255,6 @@ export default function LogoInputPage() {
               )}
             </div>
 
-            {/* Examples Section */}
             <div className="examples-section">
               <p className="examples-label">예시 선택 (클릭하면 자동 입력됩니다)</p>
               <div className="examples-grid">
@@ -263,7 +302,6 @@ export default function LogoInputPage() {
             </div>
           </div>
 
-          {/* Step 2: Similar Codes */}
           <div className={`form-panel ${step === 2 ? "visible" : ""}`}>
             <p className="panel-eyebrow">Step 02 / 03</p>
             <h2 className="panel-title">입력한 정보를 바탕으로 유사군 코드를 찾았습니다</h2>
@@ -272,7 +310,7 @@ export default function LogoInputPage() {
             </p>
 
             <div className="codes-section">
-              {SIMILAR_CODES.map((item) => (
+              {recommendedCodes.map((item) => (
                 <div
                   key={item.code}
                   className={`code-item ${formData.selectedCodes.includes(item.code) ? "selected" : ""}`}
@@ -303,8 +341,8 @@ export default function LogoInputPage() {
 
             <div className="form-actions">
               <button className="btn-back" onClick={handleBack}>이전</button>
-              <button className="btn-next" onClick={handleNext}>
-                다음 단계
+              <button className="btn-next" onClick={handleNext} disabled={isClassifying}>
+                {isClassifying ? "유사군 추천 중..." : "다음 단계"}
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth="2.5"
                   strokeLinecap="round" strokeLinejoin="round">
@@ -315,7 +353,6 @@ export default function LogoInputPage() {
             </div>
           </div>
 
-          {/* Step 3: Image Upload */}
           <div className={`form-panel ${step === 3 ? "visible" : ""}`}>
             <p className="panel-eyebrow">Step 03 / 03</p>
             <h2 className="panel-title">상표 이미지를 업로드해주세요</h2>
@@ -388,4 +425,3 @@ export default function LogoInputPage() {
     </div>
   );
 }
-

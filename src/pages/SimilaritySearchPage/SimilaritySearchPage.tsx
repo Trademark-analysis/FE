@@ -1,48 +1,31 @@
 import "./SimilaritySearchPage.css";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate, useLocation } from "react-router-dom"; 
 
 type SimilarCandidate = {
-  name: string;
-  probability: number;
-  niceClass: string;
-  reason: string;
+  fileName: string;
+  ocr_text: string;
+  type: string;
+  final_score: number;
+  image_similarity: number;
+  text_similarity: number;
+  nice_codes: string[];
+  matched_nice_codes: string[];
+  vienna_codes: string[];
+  matched_vienna_codes: string[];
 };
 
-const similarCandidates: SimilarCandidate[] = [
-  {
-    name: "STARBUKS COFFEE",
-    probability: 99,
-    niceClass: "제30류 · 커피/음료",
-    reason: "",
-  },
-  {
-    name: "STARBOOKS",
-    probability: 90,
-    niceClass: "제35류 · 온라인 판매",
-    reason: "",
-  },
-  {
-    name: "STAR",
-    probability: 81,
-    niceClass: "제42류 · IT 서비스",
-    reason: "",
-  },
-  {
-    name: "BOOKS COFFEE",
-    probability: 72,
-    niceClass: "제30류 · 식음료",
-    reason: "",
-  },
-];
-
-function getRiskLabel(probability: number) {
-  if (probability >= 90) return "높음";
-  if (probability >= 80) return "주의";
+function getRiskLabel(score: number) {
+  if (score >= 75) return "높음";
+  if (score >= 50) return "주의";
   return "보통";
 }
 
 function SimilaritySearchPage() {
   const navigate = useNavigate(); 
+  const location = useLocation();
+
+  const analysisResult = location.state?.analysisResult;
+  const candidateList: SimilarCandidate[] = analysisResult?.similar_trademark || [];
 
   return (
     <main className="similarity-page">
@@ -66,6 +49,7 @@ function SimilaritySearchPage() {
         </header>
 
         <div className="similarity-layout">
+          {/* ── 내 상표 카드 영역 ── */}
           <section className="my-trademark-card" aria-label="내 상표 정보">
             <div className="section-heading">
               <p>My Trademark</p>
@@ -73,69 +57,108 @@ function SimilaritySearchPage() {
             </div>
 
             <div className="my-image-box">
-              <div className="image-placeholder" aria-hidden="true">
-                <span className="diagonal diagonal-one" />
-                <span className="diagonal diagonal-two" />
-              </div>
+              {analysisResult?.imageUrl ? (
+                <img 
+                  src={analysisResult.imageUrl} 
+                  alt="My Trademark" 
+                  style={{ width: "100%", height: "100%", objectFit: "contain" }} 
+                />
+              ) : (
+                <div className="image-placeholder" aria-hidden="true">
+                  <span className="diagonal diagonal-one" />
+                  <span className="diagonal diagonal-two" />
+                </div>
+              )}
             </div>
 
             <div className="trademark-info">
-              <h3>STARBOX COFFEE</h3>
+              <h3>{analysisResult?.trademarkName || "STARBOX COFFEE"}</h3>
               <p>분석 대상 상표명</p>
             </div>
 
-            {/* 3. 분석 리포트 보기 버튼의 경로를 /report 로 수정 */}
             <button 
               className="detail-button" 
               type="button" 
-              onClick={() => navigate("/report")}
+              onClick={() => navigate("/report", { state: { analysisResult } })}
             >
               분석 리포트 보기
               <span>→</span>
             </button>
           </section>
 
+          {/* ── 유사 후보 리스트 영역 ── */}
           <section className="similar-candidate-section" aria-label="유사 후보 목록">
             <div className="section-heading candidate-heading">
               <div>
                 <p>Similar Candidates</p>
                 <h2>유사 후보</h2>
               </div>
-              <span className="candidate-count">{similarCandidates.length}건</span>
+              <span className="candidate-count">{candidateList.length}건</span>
             </div>
 
             <div className="similar-candidate-list">
-              {similarCandidates.map((candidate, index) => (
-                /* 4. 유사 후보 행을 클릭하면 상세 페이지(/detail)로 이동하며 선택된 데이터를 넘겨줍니다. */
-                <article 
-                  className="similar-candidate-row" 
-                  key={candidate.name}
-                  onClick={() => navigate("/detail", { state: { candidate } })}
-                  style={{ cursor: "pointer" }} // 클릭 가능한 요소임을 보여주는 스타일 추가
-                >
-                  <div className="rank-badge">{index + 1}</div>
+              {candidateList.map((candidate, index) => {
+                const finalScore = Math.round(candidate.final_score);
+                
+                return (
+                  <article 
+                    className="similar-candidate-row" 
+                    key={candidate.fileName || index}
+                    onClick={() => navigate("/detail", { state: { candidate, analysisResult } })}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className="rank-badge">{index + 1}</div>
 
-                  <div className="similar-candidate-image">
-                    <div className="mini-placeholder" aria-hidden="true" />
-                  </div>
-
-                  <div className="similar-candidate-text">
-                    <div className="candidate-title-row">
-                      <h3>{candidate.name}</h3>
-                      <span className={`risk-chip risk-${getRiskLabel(candidate.probability)}`}>
-                        {getRiskLabel(candidate.probability)}
-                      </span>
+                    <div className="similar-candidate-image">
+                      {candidate.fileName ? (
+                        <img 
+                          src={`http://localhost:8000/static/${candidate.fileName}`} 
+                          alt={candidate.fileName}
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                          style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                        />
+                      ) : (
+                        <div className="mini-placeholder" aria-hidden="true" />
+                      )}
                     </div>
-                    <p className="candidate-meta">{candidate.niceClass}</p>
-                    <p className="candidate-reason">{candidate.reason}</p>
-                  </div>
 
-                  <div className="candidate-score">
-                    <span>유사도</span>
-                    <strong>{candidate.probability}%</strong>
-                  </div>
-                </article>
-              ))}
+                    <div className="similar-candidate-text">
+                      <div className="candidate-title-row">
+                        <h3>{candidate.ocr_text || candidate.fileName.split('.')[0]}</h3>
+                        <span className={`risk-chip risk-${getRiskLabel(finalScore)}`}>
+                          {getRiskLabel(finalScore)}
+                        </span>
+                      </div>
+                      
+                      <p className="candidate-meta">
+                        NICE 분류: {candidate.nice_codes?.join(", ") || "분류 정보 없음"}
+                      </p>
+                      
+                      <p className="candidate-reason">
+                        {candidate.matched_vienna_codes?.length > 0 
+                          ? `도형 유사(비엔나코드 매칭: ${candidate.matched_vienna_codes.join(", ")}) ` 
+                          : ""}
+                        {candidate.matched_nice_codes?.length > 0 
+                          ? `| 동일 상품군 분류 매칭` 
+                          : ""}
+                      </p>
+                    </div>
+
+                    <div className="candidate-score">
+                      <span>유사도</span>
+                      <strong>{finalScore}%</strong>
+                    </div>
+                  </article>
+                );
+              })}
+              
+              {candidateList.length === 0 && (
+                <div style={{ textAlign: "center", padding: "40px", color: "#888" }}>
+                  조회된 유사 상표 후보가 없습니다.
+                </div>
+              )}
             </div>
           </section>
         </div>
