@@ -111,12 +111,17 @@ export default function LogoInputPage() {
     if (step > 1) setStep(step - 1);
   };
 
+  //  즉시 로딩 화면으로 진입하도록 수정한 비동기 제어 영역
   const handleSubmit = () => {
     if (!formData.logoImage) {
       setErrors((prev) => ({ ...prev, logoImage: "상표 이미지를 업로드해주세요." }));
       return;
     }
-    navigate("/process", { state: formData });
+
+    console.log("=== ⏳ [1단계 입력창] 분석 시작 -> 로딩 화면(/process)으로 즉시 이동 ===");
+
+    //  원재료 formData를 rawFormData 주머니에 담아 로딩 페이지로 지연 없이 토스
+    navigate("/process", { state: { rawFormData: formData } });
   };
 
   const getStepClass = (i: number) => {
@@ -127,7 +132,6 @@ export default function LogoInputPage() {
 
   return (
     <div className="logo-input-root">
-      {/* Nav */}
       <nav className="logo-input-nav">
         <div className="nav-dot" />
         <Link to="/" className="nav-brand" style={{ textDecoration: "none" }}>TrademarkAI</Link>
@@ -136,7 +140,6 @@ export default function LogoInputPage() {
       </nav>
 
       <div className="logo-input-body">
-        {/* ── Left panel ── */}
         <aside className="left-panel">
           <div className="left-tag">
             <div className="left-tag-dot" />
@@ -190,9 +193,7 @@ export default function LogoInputPage() {
           </div>
         </aside>
 
-        {/* ── Right card ── */}
         <div className="right-card">
-          {/* Step 1: Service Description */}
           <div className={`form-panel ${step === 1 ? "visible" : ""}`}>
             <p className="panel-eyebrow">Step 01 / 03</p>
             <h2 className="panel-title">서비스/회사를 설명해주세요</h2>
@@ -215,7 +216,6 @@ export default function LogoInputPage() {
               )}
             </div>
 
-            {/* Examples Section */}
             <div className="examples-section">
               <p className="examples-label">예시 선택 (클릭하면 자동 입력됩니다)</p>
               <div className="examples-grid">
@@ -263,7 +263,6 @@ export default function LogoInputPage() {
             </div>
           </div>
 
-          {/* Step 2: Similar Codes */}
           <div className={`form-panel ${step === 2 ? "visible" : ""}`}>
             <p className="panel-eyebrow">Step 02 / 03</p>
             <h2 className="panel-title">입력한 정보를 바탕으로 유사군 코드를 찾았습니다</h2>
@@ -315,7 +314,6 @@ export default function LogoInputPage() {
             </div>
           </div>
 
-          {/* Step 3: Image Upload */}
           <div className={`form-panel ${step === 3 ? "visible" : ""}`}>
             <p className="panel-eyebrow">Step 03 / 03</p>
             <h2 className="panel-title">상표 이미지를 업로드해주세요</h2>
@@ -388,4 +386,3 @@ export default function LogoInputPage() {
     </div>
   );
 }
-
