@@ -42,7 +42,7 @@ export default function DetailedComparisonPage() {
         <section className="report__header">
           <button
             className="back-button"
-            onClick={() => navigate("/similarity")}
+            onClick={() => navigate("/report")}
           >
             ← 목록으로 돌아가기
           </button>

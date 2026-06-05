@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import "./ProcessPage.css";
 
 const STEPS = [
@@ -90,7 +90,7 @@ export default function TrademarkAnalysis() {
     <main className="process-page">
       <nav className="process-nav">
         <div className="nav-dot" />
-        <span className="nav-brand">TrademarkAI</span>
+        <Link to="/" className="nav-brand" style={{ textDecoration: "none" }}>TrademarkAI</Link>
         <div className="nav-divider" />
         <span className="nav-page">상표 유사도 분석</span>
       </nav>

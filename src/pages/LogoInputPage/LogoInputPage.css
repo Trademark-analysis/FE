@@ -299,10 +299,10 @@
 }
 
 .form-textarea {
-  padding: 12px 14px;
-  min-height: 120px;
+  padding: 10px 12px;
+  min-height: 32px;
   resize: none;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .form-input:focus,

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./AnalysisReportPage.css";
 
 type Candidate = {
@@ -43,7 +43,7 @@ function AnalysisReportPage() {
     <main className="report-page">
       <nav className="report-nav">
         <div className="nav-dot" />
-        <span className="nav-brand">TrademarkAI</span>
+        <Link to="/" className="nav-brand" style={{ textDecoration: "none" }}>TrademarkAI</Link>
         <div className="nav-divider" />
         <span className="nav-page">AI 분석 리포트</span>
       </nav>

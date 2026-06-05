@@ -1,5 +1,5 @@
 import "./SimilaritySearchPage.css";
-import { useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 
 type SimilarCandidate = {
   name: string;
@@ -48,7 +48,7 @@ function SimilaritySearchPage() {
     <main className="similarity-page">
       <nav className="similarity-nav">
         <div className="nav-dot" />
-        <span className="nav-brand">TrademarkAI</span>
+        <Link to="/" className="nav-brand" style={{ textDecoration: "none" }}>TrademarkAI</Link>
         <div className="nav-divider" />
         <span className="nav-page">유사 상표 검색 결과</span>
       </nav>

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./LogoInputPage.css";
 
 interface FormData {
   serviceDescription: string;
+  trademarkName: string;
   selectedCodes: string[];
   logoImage: File | null;
 }
@@ -38,6 +39,7 @@ export default function LogoInputPage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     serviceDescription: "",
+    trademarkName: "",
     selectedCodes: [],
     logoImage: null,
   });
@@ -48,6 +50,12 @@ export default function LogoInputPage() {
     const value = e.target.value;
     setFormData((prev) => ({ ...prev, serviceDescription: value }));
     setErrors((prev) => ({ ...prev, serviceDescription: "" }));
+  };
+
+  const handleTrademarkNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, trademarkName: value }));
+    setErrors((prev) => ({ ...prev, trademarkName: "" }));
   };
 
   const handleExampleClick = (example: string) => {
@@ -85,6 +93,10 @@ export default function LogoInputPage() {
         setErrors((prev) => ({ ...prev, serviceDescription: "서비스 설명을 입력해주세요." }));
         return;
       }
+      if (!formData.trademarkName.trim()) {
+        setErrors((prev) => ({ ...prev, trademarkName: "상표명을 입력해주세요." }));
+        return;
+      }
       setStep(2);
     } else if (step === 2) {
       if (formData.selectedCodes.length === 0) {
@@ -118,7 +130,7 @@ export default function LogoInputPage() {
       {/* Nav */}
       <nav className="logo-input-nav">
         <div className="nav-dot" />
-        <span className="nav-brand">TrademarkAI</span>
+        <Link to="/" className="nav-brand" style={{ textDecoration: "none" }}>TrademarkAI</Link>
         <div className="nav-divider" />
         <span className="nav-page">상표 등록 가능성 진단</span>
       </nav>
@@ -187,6 +199,21 @@ export default function LogoInputPage() {
             <p className="panel-desc">
               등록하려는 상표를 사용할 서비스나 회사에 대해 간단히 설명해주세요.
             </p>
+
+            <div className="form-field">
+              <label className="form-label" htmlFor="trademarkName">상표명</label>
+              <input
+                className="form-textarea"
+                id="trademarkName"
+                type="text"
+                value={formData.trademarkName}
+                onChange={handleTrademarkNameChange}
+                placeholder="예) STARBOX COFFEE"
+              />
+              {errors.trademarkName && (
+                <span className="error-message" style={{ marginTop: 6 }}>{errors.trademarkName}</span>
+              )}
+            </div>
 
             {/* Examples Section */}
             <div className="examples-section">
