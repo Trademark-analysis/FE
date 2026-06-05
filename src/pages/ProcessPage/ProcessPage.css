@@ -18,8 +18,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 28px;
+  gap: 56px;
   padding: 40px;
+
+  width: 100%;
 }
 
 .imageBox {
@@ -115,19 +117,26 @@
 
 .steps {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 700px;
+  flex-wrap: nowrap;
 }
 
 .stepWrapper {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-shrink: 0;
 }
 
 .step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
 }
 
 .stepCircle {
@@ -138,8 +147,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  transition: all 0.4s;
 }
 
 .stepIcon {
@@ -153,9 +160,10 @@
 }
 
 .stepLine {
-  width: 40px;
+  width: 80px;
   height: 2px;
-  margin-bottom: 22px;
+  margin-top: 27px;
+  margin-bottom: 0;
 }
 
 .waiting .stepCircle {
@@ -240,3 +248,4 @@
     transform: translateY(0);
   }
 }
+
