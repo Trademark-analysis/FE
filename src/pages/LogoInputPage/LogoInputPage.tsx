@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./LogoInputPage.css";
+import axios from "axios";
 
 interface FormData {
   serviceDescription: string;
   trademarkName: string;
   selectedCodes: string[];
   logoImage: File | null;
+}
+
+interface ClassificationCode {
+  code: string;
+  description: string;
 }
 
 const STEPS = [
@@ -45,6 +51,8 @@ export default function LogoInputPage() {
   });
   const [imagePreview, setImagePreview] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [recommendedCodes, setRecommendedCodes] = useState<ClassificationCode[]>([]);
+  const [isClassifying, setIsClassifying] = useState(false);
 
   const handleServiceChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -87,25 +95,56 @@ export default function LogoInputPage() {
     }
   };
 
-  const handleNext = () => {
-    if (step === 1) {
-      if (!formData.serviceDescription.trim()) {
-        setErrors((prev) => ({ ...prev, serviceDescription: "서비스 설명을 입력해주세요." }));
-        return;
-      }
-      if (!formData.trademarkName.trim()) {
-        setErrors((prev) => ({ ...prev, trademarkName: "상표명을 입력해주세요." }));
-        return;
-      }
-      setStep(2);
-    } else if (step === 2) {
-      if (formData.selectedCodes.length === 0) {
-        setErrors((prev) => ({ ...prev, selectedCodes: "최소 1개 이상의 유사군 코드를 선택해주세요." }));
-        return;
-      }
-      setStep(3);
+  const handleNext = async () => {
+  if (step === 1) {
+    if (!formData.serviceDescription.trim()) {
+      setErrors((prev) => ({ ...prev, serviceDescription: "서비스 설명을 입력해주세요." }));
+      return;
     }
-  };
+
+    if (!formData.trademarkName.trim()) {
+      setErrors((prev) => ({ ...prev, trademarkName: "상표명을 입력해주세요." }));
+      return;
+    }
+
+    try {
+      setIsClassifying(true);
+
+      const response = await axios.post(
+        "http://localhost:8080/api/trademark/classification",
+        {
+          description: formData.serviceDescription,
+        }
+      );
+
+      const codes = Array.isArray(response.data) ? response.data : [];
+
+      setRecommendedCodes(codes);
+      setFormData((prev) => ({
+        ...prev,
+        selectedCodes: [],
+      }));
+
+      setStep(2);
+    } catch (error) {
+      console.error("니스/유사군 코드 추천 실패:", error);
+      alert("코드 추천에 실패했습니다. 백엔드/ML 서버 상태를 확인해주세요.");
+    } finally {
+      setIsClassifying(false);
+    }
+
+    return;
+  }
+
+  if (step === 2) {
+    if (formData.selectedCodes.length === 0) {
+      setErrors((prev) => ({ ...prev, selectedCodes: "최소 1개 이상의 코드를 선택해주세요." }));
+      return;
+    }
+
+    setStep(3);
+  }
+};
 
   const handleBack = () => {
     if (step > 1) setStep(step - 1);
@@ -271,7 +310,7 @@ export default function LogoInputPage() {
             </p>
 
             <div className="codes-section">
-              {SIMILAR_CODES.map((item) => (
+              {recommendedCodes.map((item) => (
                 <div
                   key={item.code}
                   className={`code-item ${formData.selectedCodes.includes(item.code) ? "selected" : ""}`}
@@ -302,8 +341,8 @@ export default function LogoInputPage() {
 
             <div className="form-actions">
               <button className="btn-back" onClick={handleBack}>이전</button>
-              <button className="btn-next" onClick={handleNext}>
-                다음 단계
+              <button className="btn-next" onClick={handleNext} disabled={isClassifying}>
+                {isClassifying ? "유사군 추천 중..." : "다음 단계"}
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth="2.5"
                   strokeLinecap="round" strokeLinejoin="round">

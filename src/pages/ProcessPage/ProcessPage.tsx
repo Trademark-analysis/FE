@@ -17,7 +17,8 @@ export default function TrademarkAnalysis() {
   const location = useLocation();
   
   const rawFormData = location.state?.rawFormData;
-  const apiResultRef = useRef<any>(null); // 비동기 API 결과를 담아놓을 보관함
+  const apiResultRef = useRef<Record<string, unknown> | null>(null);
+  const apiCalledRef = useRef(false);
   const [apiFailed, setApiFailed] = useState(false);
 
   const [stepStates, setStepStates] = useState<StepState[]>(["active", "waiting", "waiting", "waiting"]);
@@ -32,11 +33,18 @@ export default function TrademarkAnalysis() {
   useEffect(() => {
     if (!rawFormData) return;
 
+    if (apiCalledRef.current) return;
+      apiCalledRef.current = true;
+
     const callBackendApi = async () => {
       const multipartBody = new FormData();
       multipartBody.append("trademarkName", rawFormData.trademarkName);
       multipartBody.append("serviceDescription", rawFormData.serviceDescription);
-      rawFormData.selectedCodes.forEach((code: string) => {
+      const selectedCodes = Array.isArray(rawFormData.selectedCodes)
+        ? rawFormData.selectedCodes
+        : [];
+
+      selectedCodes.forEach((code: string) => {
         multipartBody.append("selectedCodes", code);
       });
       multipartBody.append("image", rawFormData.logoImage);
