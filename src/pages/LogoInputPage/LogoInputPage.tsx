@@ -113,7 +113,8 @@ export default function LogoInputPage() {
       const response = await axios.post(
         "http://localhost:8080/api/trademark/classification",
         {
-          description: formData.serviceDescription,
+          trademarkName: formData.trademarkName,
+          serviceDescription: formData.serviceDescription
         }
       );
 
