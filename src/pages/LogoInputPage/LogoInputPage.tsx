@@ -208,7 +208,7 @@ export default function LogoInputPage() {
                 type="text"
                 value={formData.trademarkName}
                 onChange={handleTrademarkNameChange}
-                placeholder="예) STARBOX COFFEE"
+                placeholder="예) toss"
               />
               {errors.trademarkName && (
                 <span className="error-message" style={{ marginTop: 6 }}>{errors.trademarkName}</span>
