@@ -42,6 +42,15 @@ type AnalysisResult = {
   report?: Record<string, unknown>;
   similarity_assessment?: Record<string, unknown>;
   distinctiveness?: Record<string, unknown>;
+  distinctiveness_score?: number | string;
+  distinctivenessScore?: number | string;
+};
+
+type DistinctivenessReport = {
+  score?: number;
+  level?: string;
+  reasons?: string[];
+  suggestions?: string[];
 };
 
 function toPercent(score: number | null | undefined) {
@@ -122,10 +131,25 @@ function AnalysisReportPage() {
     report["주요 위험 요소"] ||
     similarityAssessment["risk_factors"] ||
     [];
+  const distinctivenessReport = report["식별력 검사"] as
+    | {
+        score?: number | string;
+        level?: string;
+      }
+    | undefined;
+
+  const distinctivenessScore =
+    analysisResult?.distinctiveness_score ??
+    analysisResult?.distinctivenessScore ??
+    distinctivenessReport?.score ??
+    (analysisResult?.distinctiveness?.score as number | string | undefined);
 
   const summaryItems = [
     `최종 결론: ${conclusion}`,
     `종합 유사도: ${overallScore}`,
+    distinctivenessScore !== undefined && distinctivenessScore !== null
+      ? `식별력 점수: ${distinctivenessScore}점`
+      : "식별력 점수: -",
     ...(riskFactors.length > 0 ? riskFactors : ["유사 후보 기반 분석 완료"]),
   ];
 
@@ -173,7 +197,9 @@ function AnalysisReportPage() {
               입력 상표명: <strong>{trademarkName}</strong>
             </h2>
 
-            <p className="overview-desc">{resultMessage}</p>
+            <p className="overview-desc">
+              입력 상표와 기존 상표의 유사 후보를 기준으로 분석이 완료되었습니다.
+            </p>
 
             <ul className="summary-list">
               {summaryItems.map((item) => (
